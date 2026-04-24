@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getData } from "@/lib/data";
-import { deleteMediaAction, logoutAction, saveGoalAction, saveMonthAction, saveSettingsAction, uploadMediaAction } from "@/lib/actions";
-import { LogOut, Trash2, UploadCloud } from "lucide-react";
+import { addGoalAction, deleteGoalAction, deleteMediaAction, logoutAction, saveGoalAction, saveMonthAction, saveSettingsAction, uploadMediaAction } from "@/lib/actions";
+import { LogOut, Plus, Trash2, UploadCloud } from "lucide-react";
 import type { Media } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -68,15 +68,42 @@ export default async function AdminPage() {
       </section>
 
       <section className="shell p-6">
-        <h2 className="mb-5 text-2xl font-black">هدف‌ها</h2>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-2xl font-black">هدف‌ها</h2>
+            <p className="mt-2 text-sm font-bold text-stone-500">هدف جدید اضافه کن، هدف‌های قبلی را ویرایش یا حذف کن.</p>
+          </div>
+        </div>
+
+        <form action={addGoalAction} className="mb-5 grid gap-4 rounded-[1.7rem] border border-dashed border-gold/50 bg-white/45 p-4 md:grid-cols-4">
+          <Field name="title" label="عنوان هدف جدید" value="" />
+          <Field name="current_amount" label="مقدار فعلی" value="0" type="number" />
+          <Field name="target_amount" label="مقدار هدف" value="0" type="number" />
+          <div className="grid items-end">
+            <button className="btn-primary inline-flex items-center justify-center gap-2"><Plus className="h-4 w-4" /> افزودن هدف</button>
+          </div>
+        </form>
+
         <div className="grid gap-4">
-          {goals.map(g => <form key={g.id} action={saveGoalAction} className="grid gap-4 rounded-[1.7rem] border border-white/70 bg-white/60 p-4 md:grid-cols-4">
-            <input type="hidden" name="id" value={g.id} />
-            <Field name="title" label="عنوان" value={g.title} />
-            <Field name="current_amount" label="مقدار فعلی" value={String(g.current_amount)} type="number" />
-            <Field name="target_amount" label="مقدار هدف" value={String(g.target_amount)} type="number" />
-            <div className="grid items-end"><button className="btn-primary">ذخیره</button></div>
-          </form>)}
+          {goals.map(g => (
+            <div key={g.id} className="grid gap-3 rounded-[1.7rem] border border-white/70 bg-white/60 p-4">
+              <form action={saveGoalAction} className="grid gap-4 md:grid-cols-4">
+                <input type="hidden" name="id" value={g.id} />
+                <Field name="title" label="عنوان" value={g.title} />
+                <Field name="current_amount" label="مقدار فعلی" value={String(g.current_amount)} type="number" />
+                <Field name="target_amount" label="مقدار هدف" value={String(g.target_amount)} type="number" />
+                <div className="grid items-end"><button className="btn-primary">ذخیره</button></div>
+              </form>
+
+              <form action={deleteGoalAction}>
+                <input type="hidden" name="id" value={g.id} />
+                <button className="rounded-xl bg-red-50 px-4 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                  <Trash2 className="ml-1 inline h-4 w-4" />
+                  حذف این هدف
+                </button>
+              </form>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -202,8 +202,14 @@ function ChecklistToggle({ item }: { item: ChecklistItem }) {
 function LuxuryChart({ data }: { data: { label: string; value: number }[] }) {
   const w = 900, h = 310, pad = 42;
   const values = data.map(d => d.value);
-  const min = Math.min(0, ...values), max = Math.max(1000, ...values);
+  const minRaw = Math.min(0, ...values);
+  const maxRaw = Math.max(1000, ...values);
+
+  // محور عمودی را ۷۰٪ بالاتر از بیشترین مقدار می‌گیریم تا نمودار نفس داشته باشد و به سقف نچسبد
+  const min = minRaw < 0 ? minRaw * 1.15 : 0;
+  const max = maxRaw * 1.7;
   const range = max - min || 1;
+
   const x = (i: number) => pad + (i * (w - pad * 2)) / Math.max(1, data.length - 1);
   const y = (v: number) => h - pad - ((v - min) / range) * (h - pad * 2);
   const points = data.map((d, i) => `${x(i)},${y(d.value)}`).join(" ");

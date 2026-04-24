@@ -61,6 +61,33 @@ export async function saveMonthAction(formData: FormData) {
   revalidatePath("/admin");
 }
 
+export async function addGoalAction(formData: FormData) {
+  requireAdmin();
+  const title = String(formData.get("title") || "").trim();
+  if (!title) return;
+
+  const { data: maxRow } = await supabaseAdmin()
+    .from("goals")
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const nextSort = Number(maxRow?.sort_order || 0) + 1;
+
+  const { error } = await supabaseAdmin().from("goals").insert({
+    title,
+    current_amount: Number(formData.get("current_amount") || 0),
+    target_amount: Number(formData.get("target_amount") || 0),
+    is_done: false,
+    sort_order: nextSort,
+  });
+
+  if (error) throw error;
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
 export async function saveGoalAction(formData: FormData) {
   requireAdmin();
   const id = String(formData.get("id"));
@@ -77,20 +104,36 @@ export async function saveGoalAction(formData: FormData) {
   revalidatePath("/admin");
 }
 
+export async function deleteGoalAction(formData: FormData) {
+  requireAdmin();
+  const id = String(formData.get("id") || "");
+  if (!id) return;
+
+  const { error } = await supabaseAdmin().from("goals").delete().eq("id", id);
+  if (error) throw error;
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
 export async function toggleGoalAction(formData: FormData) {
   const id = String(formData.get("id"));
-  const is_done = formData.get("is_done") === "on";
+  const next = String(formData.get("is_done") || "");
+  const is_done = next === "on";
   const { error } = await supabaseAdmin().from("goals").update({ is_done }).eq("id", id);
   if (error) throw error;
   revalidatePath("/");
+  revalidatePath("/admin");
 }
 
 export async function toggleChecklistAction(formData: FormData) {
   const id = String(formData.get("id"));
-  const is_done = formData.get("is_done") === "on";
+  const next = String(formData.get("is_done") || "");
+  const is_done = next === "on";
   const { error } = await supabaseAdmin().from("checklist").update({ is_done }).eq("id", id);
   if (error) throw error;
   revalidatePath("/");
+  revalidatePath("/admin");
 }
 
 export async function uploadMediaAction(formData: FormData) {
