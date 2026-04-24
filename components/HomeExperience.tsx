@@ -138,14 +138,7 @@ export function HomeExperience({
           <h2 className="mb-5 text-2xl font-black">چک‌لیست مسیر</h2>
           <div className="grid gap-3">
             {checklist.map((item) => (
-              <form key={item.id} action={toggleChecklistAction}>
-                <input type="hidden" name="id" value={item.id} />
-                <label className={`flex cursor-pointer items-center gap-3 rounded-[1.5rem] border p-4 transition ${item.is_done ? "border-emerald-200 bg-emerald-50/80" : "border-white/70 bg-white/65"}`}>
-                  <input name="is_done" type="checkbox" defaultChecked={item.is_done} onChange={(e) => e.currentTarget.form?.requestSubmit()} className="hidden" />
-                  <span className={item.is_done ? "text-emerald-500" : "text-stone-300"}><CheckCircle2 className="h-8 w-8" /></span>
-                  <span className="font-black text-stone-700">{item.title}</span>
-                </label>
-              </form>
+              <ChecklistToggle key={item.id} item={item} />
             ))}
           </div>
         </section>
@@ -173,16 +166,37 @@ function Stat({ icon: Icon, title, value, desc }: { icon: any; title: string; va
 
 function GoalCard({ goal }: { goal: Goal }) {
   const p = goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
-  return <form action={toggleGoalAction} className={`relative overflow-hidden rounded-[1.7rem] border p-4 ${goal.is_done ? "border-emerald-200 bg-emerald-50" : "border-white/70 bg-white/65"}`}>
-    <input type="hidden" name="id" value={goal.id} />
-    <label className="flex cursor-pointer items-center gap-3">
-      <input type="checkbox" name="is_done" defaultChecked={goal.is_done} onChange={(e) => e.currentTarget.form?.requestSubmit()} className="hidden" />
-      <span className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${goal.is_done ? "border-emerald-400 bg-emerald-400 text-white" : "border-[#e8d7c4] bg-white text-transparent"}`}><Check className="h-5 w-5" /></span>
-      <span className="font-black">{goal.title}</span>
-    </label>
-    <div className="mt-4 flex items-center justify-between text-sm font-extrabold text-stone-600"><span>{money(goal.current_amount)} / {money(goal.target_amount)}</span><span>{percent(p)}</span></div>
-    <div className="mt-3 h-3 overflow-hidden rounded-full bg-stone-100"><div className="h-full rounded-full bg-gradient-to-l from-gold to-rose" style={{ width: `${p}%` }} /></div>
-  </form>;
+  const nextValue = goal.is_done ? "off" : "on";
+
+  return (
+    <form action={toggleGoalAction} className={`relative overflow-hidden rounded-[1.7rem] border p-4 ${goal.is_done ? "border-emerald-200 bg-emerald-50" : "border-white/70 bg-white/65"}`}>
+      <input type="hidden" name="id" value={goal.id} />
+      <input type="hidden" name="is_done" value={nextValue} />
+      <button type="submit" className="flex w-full cursor-pointer items-center gap-3 text-right">
+        <span className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${goal.is_done ? "border-emerald-400 bg-emerald-400 text-white" : "border-[#e8d7c4] bg-white text-transparent"}`}>
+          <Check className="h-5 w-5" />
+        </span>
+        <span className="font-black">{goal.title}</span>
+      </button>
+      <div className="mt-4 flex items-center justify-between text-sm font-extrabold text-stone-600"><span>{money(goal.current_amount)} / {money(goal.target_amount)}</span><span>{percent(p)}</span></div>
+      <div className="mt-3 h-3 overflow-hidden rounded-full bg-stone-100"><div className="h-full rounded-full bg-gradient-to-l from-gold to-rose" style={{ width: `${p}%` }} /></div>
+    </form>
+  );
+}
+
+function ChecklistToggle({ item }: { item: ChecklistItem }) {
+  const nextValue = item.is_done ? "off" : "on";
+
+  return (
+    <form action={toggleChecklistAction}>
+      <input type="hidden" name="id" value={item.id} />
+      <input type="hidden" name="is_done" value={nextValue} />
+      <button type="submit" className={`flex w-full cursor-pointer items-center gap-3 rounded-[1.5rem] border p-4 text-right transition ${item.is_done ? "border-emerald-200 bg-emerald-50/80" : "border-white/70 bg-white/65"}`}>
+        <span className={item.is_done ? "text-emerald-500" : "text-stone-300"}><CheckCircle2 className="h-8 w-8" /></span>
+        <span className="font-black text-stone-700">{item.title}</span>
+      </button>
+    </form>
+  );
 }
 
 function LuxuryChart({ data }: { data: { label: string; value: number }[] }) {
