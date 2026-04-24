@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { direction: rtl; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: Vazirmatn, system-ui, sans-serif;
+  color: #2e2119;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 5%, rgba(236, 212, 163, .38), transparent 28%),
+    radial-gradient(circle at 88% 10%, rgba(216, 137, 152, .26), transparent 31%),
+    radial-gradient(circle at 50% 95%, rgba(255, 246, 231, .98), transparent 45%),
+    linear-gradient(180deg, #fffaf4 0%, #fbf0e7 52%, #fff8ef 100%);
+}
+
+::selection { background: rgba(201, 149, 78, .25); }
+
+.shell {
+  border: 1px solid rgba(255,255,255,.72);
+  background: rgba(255,255,255,.68);
+  box-shadow: 0 30px 90px rgba(98, 67, 40, .14);
+  border-radius: 36px;
+  backdrop-filter: blur(18px);
+}
+
+.shell-strong {
+  border: 1px solid rgba(255,255,255,.82);
+  background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,246,236,.75));
+  box-shadow: 0 34px 95px rgba(98, 67, 40, .16);
+  border-radius: 40px;
+  backdrop-filter: blur(20px);
+}
+
+.btn-primary {
+  border-radius: 20px;
+  background: linear-gradient(110deg, #ecd4a3, #d88998);
+  padding: 13px 20px;
+  font-weight: 900;
+  color: #352315;
+  box-shadow: 0 14px 34px rgba(201,149,78,.24);
+  transition: all .25s ease;
+}
+
+.btn-primary:hover { transform: translateY(-2px); }
+
+.btn-soft {
+  border-radius: 20px;
+  border: 1px solid rgba(130,95,60,.12);
+  background: rgba(255,255,255,.70);
+  padding: 13px 20px;
+  font-weight: 900;
+  color: #5b4635;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid rgba(130,95,60,.16);
+  border-radius: 18px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.82);
+  outline: none;
+}
+
+.gold-text {
+  background: linear-gradient(90deg, #9f6e2f, #c9954e, #b46f7b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.aura {
+  position: relative;
+  overflow: hidden;
+}
+
+.aura::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(255,255,255,.75) 0 1px, transparent 2px),
+    radial-gradient(circle at 58% 35%, rgba(236,212,163,.55) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 72%, rgba(216,137,152,.48) 0 1px, transparent 2px);
+  background-size: 120px 120px;
+  opacity: .46;
+  animation: drift 18s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  from { transform: translate3d(0,0,0) rotate(0deg); }
+  to { transform: translate3d(54px,-42px,0) rotate(6deg); }
+}
